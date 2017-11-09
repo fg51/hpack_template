@@ -1,6 +1,6 @@
 {-# START_FILE package.yaml #-}
 name:                {{name}}
-version:             0.1.0.0
+version:             0.0.0.1
 #synopsis:
 #description:
 homepage:            https://github.com/{{github-username}}{{^github-username}}githubuser{{/github-username}}/{{name}}#readme
@@ -24,12 +24,41 @@ executables:
 import Distribution.Simple
 main = defaultMain
 
-{-# START_FILE src/Main.hs #-}
+{-# START_FILE test/Spec.hs #-}
+{-# OPTIONS_GHC -F -pgmF hspec-discover #-}
+
+{-# START_FILE test/LibSpec.hs #-}
+module LibSpec (main, spec) where
+
+import Test.Hspec
+import Test.QuickCheck
+
+import Lib
+
+-- `main` is here so that this module can be run from GHCi on its own.  It is
+-- not needed for automatic spec discovery.
+main :: IO ()
+main = hspec spec
+
+spec :: Spec
+spec - do
+  describe "foo" $ do
+    it "should return foo bar" $ do
+      someFunc `shouldBe` "foo bar"
+
+{-# START_FILE src/Lib.hs #-}
+module Lib (someFunc) where
+
+someFunc :: IO ()
+someFunc = putStrLn "hello world"
+
+{-# START_FILE app/Main.hs #-}
 module Main where
 
+import Lib
+
 main :: IO ()
-main = do
-  putStrLn "hello world"
+main = someFunc
 
 {-# START_FILE README.md #-}
 # {{name}}
