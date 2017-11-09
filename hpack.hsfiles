@@ -15,10 +15,17 @@ extra-source-files:
 dependencies:
   - base >= 4.7 && < 5
 
+library:
+  source-dirs:
+    - src
+
 executables:
   {{name}}:
-    source-dirs:      src
+    source-dirs:      app
     main:             Main.hs
+    ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
+    dependencies:
+      - {{name}}
 
 {-# START_FILE Setup.hs #-}
 import Distribution.Simple
